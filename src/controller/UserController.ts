@@ -4,13 +4,16 @@ import { UserDTO } from "../dtos/UserDTO"
 import { BaseError } from "../errors/BaseError"
 
 export class UserController {
+    constructor(
+        private userDTO: UserDTO,
+        private userBusiness: UserBusiness
+    ) {}
+
     public getUsers = async (req: Request, res: Response) => {
         try {
-            const userDTO = new UserDTO()
-            const input = userDTO.getUserInput(req.query.q)
+            const input = this.userDTO.getUserInput(req.query.q)
 
-            const userBusiness = new UserBusiness()
-            const output = await userBusiness.getUsers(input)
+            const output = await this.userBusiness.getUsers(input)
 
             res.status(200).send(output)
         } catch (error) {
@@ -26,20 +29,15 @@ export class UserController {
 
     public createUser = async (req: Request, res: Response) => {
         try {
-            const userDTO = new UserDTO()
 
-            const input = userDTO.createUserInput(
+            const input = this.userDTO.createUserInput(
                 req.body.id,
                 req.body.name,
                 req.body.email,
                 req.body.password
             )
 
-            // instanciar a business
-            const userBusiness = new UserBusiness()
-
-            // chamar o método da business correspondente
-            const output = await userBusiness.createUser(input)
+            const output = await this.userBusiness.createUser(input)
 
             res.status(201).send(output)
         } catch (error) {

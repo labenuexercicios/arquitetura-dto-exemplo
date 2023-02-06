@@ -5,6 +5,11 @@ import { User } from "../models/User"
 import { UserDB } from "../types"
 
 export class UserBusiness {
+    constructor(
+        private userDTO: UserDTO,
+        private userDatabase: UserDatabase
+    ) {}
+
     public createUser = async (input: CreateUserInputDTO): Promise<CreateUserOutputDTO> => {
         const { id, name, email, password } = input
 
@@ -20,8 +25,7 @@ export class UserBusiness {
             throw new BadRequestError("'password' deve possuir pelo menos 4 caracteres")
         }
 
-        const userDatabase = new UserDatabase()
-        const userDBExists = await userDatabase.findUserById(id)
+        const userDBExists = await this.userDatabase.findUserById(id)
 
         if (userDBExists) {
             throw new BadRequestError("'id' já existe")
@@ -43,11 +47,9 @@ export class UserBusiness {
             created_at: newUser.getCreatedAt()
         }
 
-        await userDatabase.insertUser(newUserDB)
+        await this.userDatabase.insertUser(newUserDB)
 
-        const userDTO = new UserDTO()
-
-        const output = userDTO.createUserOutput(newUser)
+        const output = this.userDTO.createUserOutput(newUser)
 
         return output
     }
@@ -55,8 +57,7 @@ export class UserBusiness {
     public getUsers = async (input: GetUserInputDTO): Promise<GetUserOutputDTO[]> => {
         const { q } = input
 
-        const userDatabase = new UserDatabase()
-        const usersDB = await userDatabase.findUsers(q)
+        const usersDB = await this.userDatabase.findUsers(q)
 
         const users: User[] = usersDB.map((userDB) => new User(
             userDB.id,
@@ -67,9 +68,7 @@ export class UserBusiness {
         ))
 
 
-        const userDTO = new UserDTO()
-
-        const output = userDTO.getUsersOutput(users)
+        const output = this.userDTO.getUsersOutput(users)
 
         return output
     }
