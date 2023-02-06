@@ -1,27 +1,12 @@
 import { UserDatabase } from "../database/UserDatabase"
+import { CreateUserInputDTO, CreateUserOutputDTO, UserDTO } from "../dtos/UserDTO"
 import { BadRequestError } from "../errors/BadRequestError"
 import { User } from "../models/User"
 import { UserDB } from "../types"
 
 export class UserBusiness {
-    public createUser = async (input: any) => {
+    public createUser = async (input: CreateUserInputDTO): Promise<CreateUserOutputDTO> => {
         const { id, name, email, password } = input
-
-        if (typeof id !== "string") {
-            throw new BadRequestError("'id' deve ser string")
-        }
-
-        if (typeof name !== "string") {
-            throw new BadRequestError("'name' deve ser string")
-        }
-
-        if (typeof email !== "string") {
-            throw new BadRequestError("'email' deve ser string")
-        }
-
-        if (typeof password !== "string") {
-            throw new BadRequestError("'password' deve ser string")
-        }
 
         if (name.length < 2) {
             throw new BadRequestError("'name' deve possuir pelo menos 2 caracteres")
@@ -60,10 +45,9 @@ export class UserBusiness {
 
         await userDatabase.insertUser(newUserDB)
 
-        const output = {
-            message: "Cadastro realizado com sucesso",
-            user: newUser
-        }
+        const userDTO = new UserDTO() 
+
+        const output = userDTO.createUserOutput(newUser)
 
         return output
     }
