@@ -1,5 +1,5 @@
 import { UserDatabase } from "../database/UserDatabase"
-import { CreateUserInputDTO, CreateUserOutputDTO, UserDTO } from "../dtos/UserDTO"
+import { CreateUserInputDTO, CreateUserOutputDTO, GetUserInputDTO, GetUserOutputDTO, UserDTO } from "../dtos/UserDTO"
 import { BadRequestError } from "../errors/BadRequestError"
 import { User } from "../models/User"
 import { UserDB } from "../types"
@@ -45,9 +45,31 @@ export class UserBusiness {
 
         await userDatabase.insertUser(newUserDB)
 
-        const userDTO = new UserDTO() 
+        const userDTO = new UserDTO()
 
         const output = userDTO.createUserOutput(newUser)
+
+        return output
+    }
+
+    public getUsers = async (input: GetUserInputDTO): Promise<GetUserOutputDTO[]> => {
+        const { q } = input
+
+        const userDatabase = new UserDatabase()
+        const usersDB = await userDatabase.findUsers(q)
+
+        const users: User[] = usersDB.map((userDB) => new User(
+            userDB.id,
+            userDB.name,
+            userDB.email,
+            userDB.password,
+            userDB.created_at
+        ))
+
+
+        const userDTO = new UserDTO()
+
+        const output = userDTO.getUsersOutput(users)
 
         return output
     }

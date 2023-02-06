@@ -8,20 +8,13 @@ import { User } from "../models/User"
 export class UserController {
     public getUsers = async (req: Request, res: Response) => {
         try {
-            const q = req.query.q as string | undefined
+            const userDTO = new UserDTO()
+            const input = userDTO.getUserInput(req.query.q)
 
-            const userDatabase = new UserDatabase()
-            const usersDB = await userDatabase.findUsers(q)
+            const userBusiness = new UserBusiness()
+            const output = await userBusiness.getUsers(input)
 
-            const users: User[] = usersDB.map((userDB) => new User(
-                userDB.id,
-                userDB.name,
-                userDB.email,
-                userDB.password,
-                userDB.created_at
-            ))
-
-            res.status(200).send(users)
+            res.status(200).send(output)
         } catch (error) {
             console.log(error)
 

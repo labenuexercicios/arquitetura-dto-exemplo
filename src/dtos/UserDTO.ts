@@ -18,6 +18,17 @@ export interface CreateUserOutputDTO {
     }
 }
 
+export interface GetUserInputDTO {
+    q: string | undefined
+}
+
+export interface GetUserOutputDTO {
+    id: string,
+    name: string,
+    email: string,
+    createdAt: string
+}
+
 export class UserDTO {
 
     public createUserInput(
@@ -26,6 +37,7 @@ export class UserDTO {
         email: unknown,
         password: unknown
     ): CreateUserInputDTO {
+
         if (id === undefined) throw new BadRequestError("'id' é obrigatório")
         if (typeof id !== "string") throw new BadRequestError("'id' deve ser string")
 
@@ -49,6 +61,7 @@ export class UserDTO {
     }
 
     public createUserOutput(user: User): CreateUserOutputDTO {
+
         const dto: CreateUserOutputDTO = {
             message: "Cadastro realizado com sucesso",
             user: {
@@ -58,6 +71,30 @@ export class UserDTO {
                 createdAt: user.getCreatedAt()
             }
         }
+
+        return dto
+    }
+
+    public getUserInput(q: unknown): GetUserInputDTO {
+        
+        if (typeof q !== "string" && typeof q !== "undefined") {
+            throw new BadRequestError("'q' deve ser string ou undefined")
+        }
+
+        const dto: GetUserInputDTO = { q }
+
+        return dto
+    }
+
+    public getUsersOutput(users: User[]): GetUserOutputDTO[] {
+        const dto: GetUserOutputDTO[] = users.map((user) => {
+            return {
+                id: user.getId(),
+                name: user.getName(),
+                email: user.getEmail(),
+                createdAt: user.getCreatedAt()
+            }
+        })
 
         return dto
     }
