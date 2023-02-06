@@ -1,9 +1,7 @@
 import { Request, Response } from "express"
 import { UserBusiness } from "../business/UserBusiness"
-import { UserDatabase } from "../database/UserDatabase"
 import { UserDTO } from "../dtos/UserDTO"
 import { BaseError } from "../errors/BaseError"
-import { User } from "../models/User"
 
 export class UserController {
     public getUsers = async (req: Request, res: Response) => {
