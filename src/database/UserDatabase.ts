@@ -37,11 +37,11 @@ export class UserDatabase extends BaseDatabase {
       .insert(newUserDB)
   }
 
-  public async updateUser(updatedUserDB: UserDB) {
+  public async updateUser(idToEdit: string, updatedUserDB: UserDB) {
     await BaseDatabase
       .connection(UserDatabase.TABLE_USERS)
       .update(updatedUserDB)
-      .where({ id: updatedUserDB.id })
+      .where({ id: idToEdit })
   }
 
   public async deleteUserById(idToDelete: string) {
