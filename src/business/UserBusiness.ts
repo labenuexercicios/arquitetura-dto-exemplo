@@ -167,7 +167,7 @@ export class UserBusiness {
       created_at: user.getCreatedAt()
     }
 
-    await userDatabase.updateUser(updatedUserDB)
+    await userDatabase.updateUser(idToEdit, updatedUserDB)
 
     const output = {
       message: "Edição realizada com sucesso",
