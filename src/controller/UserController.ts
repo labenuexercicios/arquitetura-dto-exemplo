@@ -5,6 +5,11 @@ import { CreateUserSchema } from "../dtos/createUser.dto"
 import { ZodError } from "zod"
 
 export class UserController {
+
+  constructor(
+    private userBusiness: UserBusiness
+  ) {}
+
   public createUser = async (req: Request, res: Response) => {
     try {
       const input = CreateUserSchema.parse({
@@ -14,8 +19,8 @@ export class UserController {
         password: req.body.password
       })
 
-      const userBusiness = new UserBusiness()
-      const output = await userBusiness.createUser(input)
+      // const userBusiness = new UserBusiness()
+      const output = await this.userBusiness.createUser(input)
 
       res.status(201).send(output)
     } catch (error) {
@@ -37,8 +42,8 @@ export class UserController {
         q: req.query.q as string | undefined
       }
 
-      const userBusiness = new UserBusiness()
-      const output = await userBusiness.getUsers(input)
+      // const userBusiness = new UserBusiness()
+      const output = await this.userBusiness.getUsers(input)
 
       res.status(200).send(output)
     } catch (error) {
@@ -62,8 +67,8 @@ export class UserController {
         password: req.body.password
       }
 
-      const userBusiness = new UserBusiness()
-      const output = await userBusiness.editUser(input)
+      // const userBusiness = new UserBusiness()
+      const output = await this.userBusiness.editUser(input)
 
       res.status(200).send(output)
     } catch (error) {
@@ -83,8 +88,8 @@ export class UserController {
         idToDelete: req.params.id
       }
 
-      const userBusiness = new UserBusiness()
-      const output = await userBusiness.deleteUser(input)
+      // const userBusiness = new UserBusiness()
+      const output = await this.userBusiness.deleteUser(input)
 
       res.status(200).send(output)
     } catch (error) {
